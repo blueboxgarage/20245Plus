@@ -9,7 +9,7 @@ google_api_key = 'AIzaSyBAl7YsNqJ5BTJuW6dFINOaGWrF1CY2Bhk'
 geolocator = GoogleV3(api_key=google_api_key)
 
 # Read the ZIP codes from the CSV file
-zip_codes_df = pd.read_csv('zip_codes.csv')
+zip_codes_df = pd.read_csv('test.csv')
 
 # List to hold the latitude and longitude coordinates
 coordinates = []
