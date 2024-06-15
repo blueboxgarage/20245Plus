@@ -1,30 +1,47 @@
-from pandas import read_csv
-from pandas.plotting import scatter_matrix
-from matplotlib import pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
+import pandas as pd
+import plotly.express as px
+from geopy.exc import GeocoderTimedOut
+from geopy.geocoders import Photon
 
-# Load dataset
-url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/iris.csv"
-names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-dataset = read_csv(url, names=names)
+geolocator = Photon(user_agent="measurements")
 
-print(dataset.shape)
-print(dataset.head(20))
-print(dataset.describe())
-# class distribution
-print(dataset.groupby('class').size())
-...
-# box and whisker plots
-dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
-plt.show()
+df = pd.read_csv('zip_codes.csv', sep='\t', header=None, index_col=False, names=['zipcode'])
+
+
+# Function to get latitude and longitude
+def get_lat_long(zipcode):
+    try:
+        location = geolocator.geocode(zipcode)
+        return location.latitude, location.longitude
+    except (AttributeError, GeocoderTimedOut):
+        return None, None
+
+
+# Create new columns for latitude and longitude
+df[['latitude', 'longitude']] = df['zipcode'].apply(lambda x: pd.Series(get_lat_long(x)))
+
+# Drop rows with missing values
+# df = df.dropna(subset=['latitude', 'longitude'])
+
+# Count occurrences of each zip code
+# df['count'] = df.groupby('zip_code')['zip_code'].transform('count')
+
+# Remove duplicates
+# df = df.drop_duplicates(subset=['zip_code'])
+
+# Plot the heat map using Plotly
+# fig = px.density_mapbox(df, lat='latitude', lon='longitude', z='count', radius=10,
+#                       center=dict(lat=37.0902, lon=-95.7129), zoom=3,
+#                      mapbox_style="stamen-terrain", title="Heat Map of Credit Card Applicants")
+
+fig = px.choropleth(df,
+                    geojson=df,
+                    locations='zip_code',
+                    featureidkey="properties.ZCTA5CE10",
+                    color='value',
+                    color_continuous_scale="blues",
+                    projection="mercator",
+                    )
+
+# Show the heat map
+fig.show()
