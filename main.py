@@ -1,41 +1,33 @@
 import pandas as pd
-from geopy.geocoders import GoogleV3
-import gmplot
+from geopy.geocoders import Nominatim
+import folium
+from folium.plugins import HeatMap
 
-# Replace 'YOUR_GOOGLE_API_KEY' with your actual Google API key
-google_api_key = 'AIzaSyBAl7YsNqJ5BTJuW6dFINOaGWrF1CY2Bhk'
+# Step 1: Load your CSV data
+# Replace 'your_file.csv' with your actual CSV file path
+df = pd.read_csv('zip_codes.csv')
 
-# Initialize the geolocator with your Google API key
-geolocator = GoogleV3(api_key=google_api_key)
+# Ensure your CSV has a column named 'zip_code' or modify accordingly
+zip_codes = df['zip_code'].tolist()
 
-# Read the ZIP codes from the CSV file
-zip_codes_df = pd.read_csv('test.csv')
+# Step 2: Geocode the zip codes to get latitudes and longitudes
+geolocator = Nominatim(user_agent="zip_code_locator")
+locations = []
 
-# List to hold the latitude and longitude coordinates
-coordinates = []
-
-# Geocode each ZIP code to get the coordinates
-for zip_code in zip_codes_df['zip_code']:
+for zip_code in zip_codes:
     try:
-        location = geolocator.geocode(zip_code)
+        location = geolocator.geocode({"postalcode": zip_code, "countryRegion": "United States"})
         if location:
-            coordinates.append((location.latitude, location.longitude))
-    except Exception as e:
-        print(f"Error geocoding ZIP code {zip_code}: {e}")
+            locations.append((location.latitude, location.longitude))
+    except:
+        pass
 
-# Ensure there are valid coordinates to plot
-if coordinates:
-    # Extract the latitude and longitude values
-    latitudes, longitudes = zip(*coordinates)
+# Step 3: Create a base map
+map_center = [37.0902, -95.7129]  # Center of the US
+heat_map = folium.Map(location=map_center, zoom_start=5)
 
-    # Create the GoogleMapPlotter object centered around the first ZIP code's coordinates
-    gmap = gmplot.GoogleMapPlotter(latitudes[0], longitudes[0], 5)
+# Step 4: Add heat map layer
+HeatMap(locations).add_to(heat_map)
 
-    # Create a heatmap on the GoogleMapPlotter object
-    gmap.heatmap(latitudes, longitudes)
-
-    # Save the map to an HTML file
-    gmap.draw("heatmap.html")
-    print("Heatmap has been created and saved as 'heatmap.html'.")
-else:
-    print("No valid coordinates to plot.")
+# Step 5: Save the map to an HTML file
+heat_map.save('us_heat_map.html')
