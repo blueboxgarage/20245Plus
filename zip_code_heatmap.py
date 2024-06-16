@@ -30,4 +30,4 @@ heat_map = folium.Map(location=map_center, zoom_start=5)
 HeatMap(locations).add_to(heat_map)
 
 # Step 5: Save the map to an HTML file
-heat_map.save('us_heat_map.html')
+heat_map.save('zip_code _heatmap.html')
