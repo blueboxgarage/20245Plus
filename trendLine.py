@@ -1,37 +1,28 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
-# Read data from the .txt file
-file_path = 'data/annualAverageApplicants.txt'
-with open(file_path, 'r') as file:
-    data = file.readlines()
+# Path to annual report file
+report_file_path = 'data/annual_report.txt'
 
-# Convert data to a list of integers
-data = [int(line.strip()) for line in data]
+# Load annual report data into a pandas DataFrame
+df = pd.read_csv(report_file_path)
 
-# Generate x values (years or any time indicator)
-x = np.arange(1, len(data) + 1)
-
-# Convert data to a numpy array
-y = np.array(data, dtype=np.float64)
-
-# Fit a polynomial of degree 1 (linear trend)
-coefficients = np.polyfit(x, y, 1)
-polynomial = np.poly1d(coefficients)
-
-# Calculate the trendline values
-trendline = polynomial(x)
-
-# Plot the data
+# Plotting
 plt.figure(figsize=(10, 6))
-plt.plot(x, y, 'o', label='Data')
-plt.plot(x, trendline, 'r--', label='Trendline')
 
-# Labels and title
-plt.xlabel('Time')
-plt.ylabel('Number of Applicants')
-plt.title('Trendline of Annual Applicants')
+# Plot trendlines for each product code
+for code in ['AA', 'XA', 'FC', 'FD']:
+    plt.plot(df['Year'], df[code], marker='o', label=code)
+
+# Add labels and title
+plt.xlabel('Year')
+plt.ylabel('Number of Applications')
+plt.title('Trend of Applications Received by Product Code')
+
+# Add legend
 plt.legend()
 
-# Show the plot
+# Display the plot
+plt.grid(True)
+plt.tight_layout()
 plt.show()
