@@ -29,4 +29,7 @@ Train Classifier: The classifier is trained using the training data.
 Make Predictions: Predictions are made on the test set.
 Evaluate Classifier: The classifier's performance is evaluated using accuracy, a classification report, and a confusion matrix.
 
+trendLine.py
+takes input from .txt fileand creates a line graph to show the trend
+
 
