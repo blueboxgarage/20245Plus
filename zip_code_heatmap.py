@@ -5,7 +5,7 @@ from folium.plugins import HeatMap
 
 # Step 1: Load your CSV data
 # Replace 'your_file.csv' with your actual CSV file path
-df = pd.read_csv('zip_codes.csv')
+df = pd.read_csv('data/zip_codes.csv')
 
 # Ensure your CSV has a column named 'zip_code' or modify accordingly
 zip_codes = df['zip_code'].tolist()

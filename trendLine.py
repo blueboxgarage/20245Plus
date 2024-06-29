@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Read data from the .txt file
-file_path = 'annualAverageApplicants.txt'
+file_path = 'data/annualAverageApplicants.txt'
 with open(file_path, 'r') as file:
     data = file.readlines()
 
