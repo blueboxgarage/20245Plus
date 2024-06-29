@@ -1,7 +1,7 @@
 from collections import Counter
 
-# File paths
-input_file_path = 'data/applications.txt'
+# Updated file paths
+input_file_path = 'data/applications_with_years.txt'
 output_file_path = 'data/totalAnnualUniqueApplications.txt'
 
 # Function to load data from file
@@ -10,13 +10,13 @@ def load_data(file_path):
         data = [line.strip() for line in file]
     return data
 
-# Load data from file
+# Load data from updated file path
 data = load_data(input_file_path)
 
 # Count occurrences of each application ID
 id_counts = Counter()
 for entry in data:
-    app_id, product_code = entry.split(',')
+    app_id, product_code, year = entry.split(',')
     id_counts[app_id] += 1
 
 # Write counts to output file

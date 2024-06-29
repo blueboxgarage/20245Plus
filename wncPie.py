@@ -44,7 +44,7 @@ def generate_excel(samples):
 
 
 # File paths
-input_file_path = 'data/applications.txt'
+input_file_path = 'data/applications_with_years.txt'
 average_count_file_path = 'data/annualAverageApplicants.txt'
 
 # Load data
